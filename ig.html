@@ -1,0 +1,816 @@
+< !DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>StreamFlix - Katalog Film Modern</title>< !-- Menggunakan Font Google: Poppins untuk tampilan modern --><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
+
+/* --- CSS VARIABLES & RESET --- */
+:root {
+    --primary-bg: #141414;
+    /* Hitam Netflix-style */
+    --secondary-bg: #1f1f1f;
+    --card-bg: #2b2b2b;
+    --accent-color: #e50914;
+    /* Merah Streaming */
+    --text-color: #ffffff;
+    --text-muted: #b3b3b3;
+    --transition-speed: 0.3s;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    --modal-overlay: rgba(0, 0, 0, 0.85);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}<script src="https://pl28616085.effectivegatecpm.com/50/7c/30/507c30f8e5a0629650c0e1ac3296532c.js"></script>
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* --- HEADER & NAVIGATION --- */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    transition: background-color 0.4s;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header.scrolled {
+    background-color: var(--primary-bg);
+    box-shadow: var(--shadow);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.search-container {
+    position: relative;
+    flex-grow: 1;
+    max-width: 400px;
+    margin: 0 2rem;
+    display: none;
+    /* Hidden on mobile initially */
+}
+
+@media(min-width: 768px) {
+    .search-container {
+        display: block;
+    }
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #fff;
+    outline: none;
+    transition: var(--transition-speed);
+}
+
+.search-input:focus {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: var(--accent-color);
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    position: relative;
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #141414 0%, rgba(20, 20, 20, 0.8) 50%, rgba(20, 20, 20, 0) 100%);
+}
+
+.hero-content {
+    max-width: 600px;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.rating-badge {
+    border: 1px solid var(--text-muted);
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    color: #46d369;
+    /* Warna hijau rating tinggi */
+    font-weight: bold;
+}
+
+.hero-desc {
+    margin-bottom: 2rem;
+    color: #ddd;
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #b2070f;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: rgba(109, 109, 110, 0.7);
+    color: white;
+    margin-left: 1rem;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(109, 109, 110, 0.4);
+}
+
+/* --- CATEGORY FILTER --- */
+.category-nav {
+    padding: 2rem 5%;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.category-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-btn {
+    background: var(--secondary-bg);
+    color: var(--text-muted);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition-speed);
+    border: 1px solid transparent;
+}
+
+.cat-btn:hover,
+.cat-btn.active {
+    background: var(--text-color);
+    color: var(--primary-bg);
+    font-weight: 600;
+}
+
+/* --- MOVIE GRID --- */
+.movie-section {
+    padding: 1rem 5% 4rem;
+}
+
+.section-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
+}
+
+@media(min-width: 768px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 2rem;
+    }
+}
+
+.movie-card {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    box-shadow: var(--shadow);
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+}
+
+.poster-container {
+    position: relative;
+    padding-top: 150%;
+    /* Aspect ratio 2:3 */
+}
+
+.poster-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.card-info {
+    padding: 1rem;
+}
+
+.movie-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.star-rating {
+    color: #ffc107;
+}
+
+/* --- MODAL (DETAIL PAGE) --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-overlay);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 1rem;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: #181818;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(50px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+@media(min-width: 768px) {
+    .modal-content {
+        flex-direction: row;
+        overflow-y: hidden;
+        transform: scale(0.9);
+    }
+}
+
+.modal.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-poster {
+    flex: 1;
+    min-height: 300px;
+}
+
+@media(min-width: 768px) {
+    .modal-poster {
+        flex: 1;
+        min-height: auto;
+    }
+}
+
+.modal-poster img {
+    height: 100%;
+    width: 100%;
+}
+
+.modal-details {
+    flex: 1.5;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+}
+
+.tag {
+    border: 1px solid #555;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.modal-synopsis {
+    margin-bottom: 2rem;
+    color: #ccc;
+    line-height: 1.7;
+}
+
+.trailer-container {
+    margin-top: auto;
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 Aspect Ratio */
+    height: 0;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.trailer-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* --- TOAST NOTIFICATION --- */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background-color: #fff;
+    color: #000;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    z-index: 3000;
+    transition: transform 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- EMPTY STATE --- */
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    grid-column: 1 / -1;
+}
+
+</style></head><body>< !-- Header --><header id="main-header"><div class="logo">StreamFlix</div>< !-- Desktop Search --><div class="search-container"><input type="text" id="search-input" class="search-input" placeholder="Cari film..."></div>< !-- Mobile Search Icon (Using simple SVG) --><svg id="mobile-search-icon" onclick="document.getElementById('search-input').focus()" style="width:24px;height:24px;fill:white;cursor:pointer;" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg></header>< !-- Hero Section --><section class="hero" id="hero-section"><div class="hero-bg"><img id="hero-bg-img" src="" alt="Hero Background"><div class="hero-overlay"></div></div><div class="hero-content"><h1 class="hero-title" id="hero-title">Loading...</h1><div class="hero-meta"><span class="rating-badge" id="hero-rating">16+</span><span id="hero-year">2023</span><span id="hero-duration">2j 15m</span><span id="hero-genre">Action</span></div><p class="hero-desc" id="hero-desc">Sinopsis film sedang dimuat... </p><div class="hero-buttons"><button class="btn btn-primary" onclick="openHeroModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>Tonton Trailer </button><button class="btn btn-secondary" onclick="openHeroModal()">Selengkapnya </button></div></div></section>< !-- Category Filter --><nav class="category-nav"><button class="cat-btn active" onclick="filterMovies('All')">Semua</button><button class="cat-btn" onclick="filterMovies('Action')">Action</button><button class="cat-btn" onclick="filterMovies('Drama')">Drama</button><button class="cat-btn" onclick="filterMovies('Horror')">Horror</button><button class="cat-btn" onclick="filterMovies('Comedy')">Comedy</button><button class="cat-btn" onclick="filterMovies('Anime')">Anime</button></nav>< !-- Movie Grid --><main class="movie-section"><h2 class="section-title" id="grid-title">Film Terbaru & Populer</h2><div class="movie-grid" id="movie-grid">< !-- Cards injected via JS --></div></main>< !-- Footer --><footer style="padding: 2rem 5%; text-align: center; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid #333;"><p>&copy;
+2023 StreamFlix. Dibuat untuk tujuan demonstrasi desain.</p></footer>< !-- Movie Detail Modal --><div class="modal" id="movie-modal"><div class="modal-content"><div class="close-modal" onclick="closeModal()">&times;
+</div><div class="modal-poster"><img id="modal-img" src="" alt="Poster"></div><div class="modal-details"><h2 class="modal-title" id="modal-title">Judul Film</h2><div class="modal-meta"><span class="tag" id="modal-genre">Genre</span><span id="modal-year">2023</span><span id="modal-duration">120m</span><div class="star-rating" id="modal-rating">★★★★★ <span style="color:#aaa;font-size:0.8rem">(8.5)</span></div></div><div class="modal-synopsis" id="modal-desc">Sinopsis lengkap akan muncul di sini. </div><div class="trailer-container" id="modal-trailer">< !-- YouTube Iframe injected here --></div><button class="btn btn-primary" style="margin-top: 1rem;" onclick="showToast('Film ditambahkan ke daftar tontonan')">+Tambah ke Daftar Saya </button></div></div></div>< !-- Toast Notification --><div class="toast" id="toast"><svg width="20" height="20" viewBox="0 0 24 24" fill="green"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg><span id="toast-message">Berhasil !</span></div>< !-- JavaScript Logic --><script> // --- DATA FILM ---
+
+// Menggunakan placeholder image dari Picsum Photos yang konsisten berdasarkan ID
+const movies=[ {
+    id: 1,
+        title: "Cyber Chronicles",
+        genre: "Action",
+        year: 2024,
+        rating: 4.8,
+        duration: "2j 12m",
+        imageSeed: "cyberpunk",
+        desc: "Di masa depan dystopia, seorang peretas muda menemukan konspirasi yang mengancam keberadaan umat manusia. Diburu oleh korporasi jahat, ia harus bergabung dengan sekelompok pemberontak untuk menyelamatkan dunia.",
+        trailerId: "8HPYdpWEaUE" // Placeholder generic trailer ID
+}
+
+,
+{
+id: 2,
+    title: "Midnight Sonata",
+    genre: "Drama",
+    year: 2023,
+    rating: 4.6,
+    duration: "1j 45m",
+    imageSeed: "violin",
+    desc: "Seorang pianis berbakat kehilangan pendengarannya setelah kecelakaan tragis. Ia harus menemukan kembali semangat bermusiknya melalui getaran dan ingatan masa lalu yang menyakitkan.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 3,
+    title: "The Haunted Manor",
+    genre: "Horror",
+    year: 2022,
+    rating: 4.3,
+    duration: "1j 55m",
+    imageSeed: "haunted",
+    desc: "Keluarga muda pindah ke rumah tua dengan harga murah, namun mereka segera menyadari bahwa mereka tidak sendirian. Entitas kuno memangsa rasa takut mereka.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 4,
+    title: "Laughing Gas",
+    genre: "Comedy",
+    year: 2023,
+    rating: 4.1,
+    duration: "1j 30m",
+    imageSeed: "party",
+    desc: "Seorang ilmuwan gila secara tidak sengaja menciptakan gas yang membuat semua orang mengungkapkan rahasia terdalam mereka. Kegadapan pun terjadi di kota kecil.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 5,
+    title: "Spirit of the Sword",
+    genre: "Anime",
+    year: 2024,
+    rating: 4.9,
+    duration: "2j 5m",
+    imageSeed: "samurai",
+    desc: "Dunia fantasi epik di mana pedang memiliki jiwa. Seorang pemuda yang lemah menemukan pedang legendaris dan ditakdirkan untuk mengalahkan Raja Iblis.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 6,
+    title: "Velocity Limit",
+    genre: "Action",
+    year: 2023,
+    rating: 4.5,
+    duration: "1j 50m",
+    imageSeed: "cars",
+    desc: "Pembalap jalanan legendaris ditarik kembali ke dunia balap bawah tanah untuk membalas dendam atas kematian saudaranya. Kecepatan tinggi dan aksi tanpa henti.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 7,
+    title: "Silent Tears",
+    genre: "Drama",
+    year: 2021,
+    rating: 4.7,
+    duration: "2j 20m",
+    imageSeed: "woman",
+    desc: "Kisah haru seorang ibu yang berjuang membesarkan anaknya sendirian di tengah kesulitan ekonomi dan prasangka sosial.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 8,
+    title: "Deep Blue Terror",
+    genre: "Horror",
+    year: 2024,
+    rating: 3.9,
+    duration: "1j 40m",
+    imageSeed: "shark",
+    desc: "Ekspedisi penelitian bawah laut terjebak stasiun dengan makhluk laut prasejarah yang terbangun akibat pengeboran minyak.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 9,
+    title: "Office Space Chaos",
+    genre: "Comedy",
+    year: 2020,
+    rating: 4.2,
+    duration: "1j 35m",
+    imageSeed: "office",
+    desc: "Komedi satir tentang kehidupan kantor modern, bos yang menyebalkan, dan rekan kerja yang aneh.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+,
+{
+id: 10,
+    title: "Galactic Heroes",
+    genre: "Anime",
+    year: 2023,
+    rating: 4.6,
+    duration: "2j 10m",
+    imageSeed: "space",
+    desc: "Aliansi antarplanet bersatu melawan invasi alien yang ingin mengambil sumber energi galaksi.",
+    trailerId: "8HPYdpWEaUE"
+}
+
+];
+
+let currentHeroMovie=movies[0];
+
+// --- DOM ELEMENTS ---
+const movieGrid=document.getElementById('movie-grid');
+const searchInput=document.getElementById('search-input');
+const modal=document.getElementById('movie-modal');
+const header=document.getElementById('main-header');
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', ()=> {
+        renderHero(movies[0]);
+        renderMovies(movies);
+        setupScrollEffect();
+    });
+
+// --- RENDER FUNCTIONS ---
+function renderHero(movie) {
+    currentHeroMovie=movie;
+    // Menggunakan Picsum Seed untuk gambar yang konsisten
+    const bgUrl=`https: //picsum.photos/seed/${movie.imageSeed}/1920/1080`;
+
+    document.getElementById('hero-bg-img').src=bgUrl;
+    document.getElementById('hero-title').innerText=movie.title;
+    document.getElementById('hero-rating').innerText='16+'; // Static for demo
+    document.getElementById('hero-year').innerText=movie.year;
+    document.getElementById('hero-duration').innerText=movie.duration;
+    document.getElementById('hero-genre').innerText=movie.genre;
+    document.getElementById('hero-desc').innerText=movie.desc;
+}
+
+function renderMovies(movieList) {
+    movieGrid.innerHTML='';
+
+    if (movieList.length===0) {
+        movieGrid.innerHTML='<div class="no-results">Tidak ada film yang ditemukan.</div>';
+        return;
+    }
+
+    movieList.forEach(movie=> {
+            const card=document.createElement('div');
+            card.className='movie-card';
+            card.onclick=()=> openModal(movie);
+
+            // Generate Star HTML
+            const fullStars=Math.floor(movie.rating);
+            let starHtml='';
+
+            for(let i=0; i<5; i++) {
+                starHtml +=i < fullStars ? '★' : '☆';
+            }
+
+            card.innerHTML=` <div class="poster-container" > <img src="https://picsum.photos/seed/${movie.imageSeed}/400/600" alt="${movie.title}" loading="lazy" > </div> <div class="card-info" > <h3 class="movie-title" >$ {
+                movie.title
+            }
+
+            </h3> <div class="movie-meta" > <span>$ {
+                movie.year
+            }
+
+            </span> <span class="star-rating" >$ {
+                starHtml
+            }
+
+            </span> </div> </div> `;
+            movieGrid.appendChild(card);
+        });
+}
+
+// --- INTERACTION LOGIC ---
+
+// Filter Category
+function filterMovies(category) {
+    // Update active button state
+    const buttons=document.querySelectorAll('.cat-btn');
+
+    buttons.forEach(btn=> {
+            btn.classList.remove('active');
+            if (btn.innerText===category) btn.classList.add('active');
+        });
+
+    // Filter data
+    if (category==='All') {
+        renderMovies(movies);
+        document.getElementById('grid-title').innerText="Film Terbaru & Populer";
+    }
+
+    else {
+        const filtered=movies.filter(m=> m.genre===category);
+        renderMovies(filtered);
+
+        document.getElementById('grid-title').innerText=`Film $ {
+            category
+        }
+
+        `;
+    }
+}
+
+// Search Function
+searchInput.addEventListener('input', (e)=> {
+        const query=e.target.value.toLowerCase();
+        const filtered=movies.filter(m=> m.title.toLowerCase().includes(query));
+        renderMovies(filtered);
+        document.getElementById('grid-title').innerText=query ? `Hasil Pencarian: "${e.target.value}" ` : "Film Terbaru & Populer";
+
+        // Reset active category button visually if searching
+        if(query.length > 0) {
+            document.querySelectorAll('.cat-btn').forEach(btn=> btn.classList.remove('active'));
+        }
+    });
+
+// Header Scroll Effect
+function setupScrollEffect() {
+    window.addEventListener('scroll', ()=> {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            }
+
+            else {
+                header.classList.remove('scrolled');
+            }
+        });
+}
+
+// --- MODAL LOGIC ---
+function openModal(movie) {
+    document.getElementById('modal-img').src=`https: //picsum.photos/seed/${movie.imageSeed}/600/900`;
+    document.getElementById('modal-title').innerText=movie.title;
+    document.getElementById('modal-genre').innerText=movie.genre;
+    document.getElementById('modal-year').innerText=movie.year;
+    document.getElementById('modal-duration').innerText=movie.duration;
+    document.getElementById('modal-desc').innerText=movie.desc;
+
+    document.getElementById('modal-rating').innerHTML=`★`.repeat(Math.floor(movie.rating))+`☆`.repeat(5 - Math.floor(movie.rating))+` <span style="color:#aaa;font-size:0.8rem">($ {
+            movie.rating
+        })</span>`;
+
+    // Set YouTube Trailer (Using generic video ID for demo, usually dynamic)
+    // In a real app, you would match movie.trailerId here
+    const trailerHtml=`<iframe width="560" height="315" src="https://www.youtube.com/embed/${movie.trailerId}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    document.getElementById('modal-trailer').innerHTML=trailerHtml;
+
+    modal.classList.add('active');
+    document.body.style.overflow='hidden'; // Prevent background scrolling
+}
+
+function openHeroModal() {
+    openModal(currentHeroMovie);
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+    document.getElementById('modal-trailer').innerHTML=''; // Stop video playback
+    document.body.style.overflow='auto';
+}
+
+// Close modal when clicking outside content
+modal.addEventListener('click', (e)=> {
+        if (e.target===modal) closeModal();
+    });
+
+// --- TOAST NOTIFICATION ---
+function showToast(message) {
+    const toast=document.getElementById('toast');
+    document.getElementById('toast-message').innerText=message;
+    toast.classList.add('show');
+
+    setTimeout(()=> {
+            toast.classList.remove('show');
+        }
+
+        , 3000);
+}
+
+</script></body></html>
